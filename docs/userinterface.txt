@@ -1,0 +1,11 @@
+User Interface
+
+The program's user interface is the command line. It takes between 0 and 2 arguments.
+
+No arguments:
+When no arguments are given, a numbered list of available files is presented.
+
+One or two arguments:
+The first argument, which must be a number corresponding to the file list, is
+given, the program prints the contents of the file. If there is a second
+argument, the file is assumed to be cyphered according to the given key.
