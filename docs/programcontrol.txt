@@ -1,0 +1,126 @@
+Program Control
+
+After the user interacts with the CLI and User Interface parses through arguments, Program Control decides how to
+proceed according to the number of arguments provided. Program control takes between 0 and 2 arguments.
+
+Zero arguments:
+When no arguments are given, the program should ask for a directory of files from the File Handler. The program should
+then return a list of all available files, with the file number and associate title.
+
+One argument:
+When there is one argument given, the program should request file contents from the File Handler [validate?] using the
+number of the file and provide it with a default key. Upon return of the deciphered message associated with the given
+file, Program Control returns the deciphered string to User Interface. If the file number is invalid, Program Control
+returns an error message.
+
+Two arguments:
+When there are two arguments given, the program should request file contents from the File Handler and provide it with a
+specified alternate key to use when deciphering. If the file number or alternate key is invalid, Program Control returns
+an error message. If the deciphered message is returned successfully, Program Control returns the deciphered string.
+
+
+
+-- PSEUDOCODE --
+
+// Upon construction of a Program Control object, method caller should specify the number of arguments and the arguments
+themselves
+// this can be tweaked; User Interface need not provide number of arguments; I can just figure that out
+
+public class ProgramControl {
+        instantiate FileHandler object
+        instantiate String errorMessageFile
+        instantiate String errorMessageCipher
+
+        ProgramControl constructor:
+            this.fileHandler = fileHandler;
+
+        public String run(String[] args):
+            if args.length == 0
+                call listFiles method to return file list
+            if args.length == 1
+                call defaultDecipher method with parameter args[0] to return decoded message using default key or error if fileNum invalid
+            if args.length == 2
+                call SpecialDecipher(args[0], args[1]) to return decoded message using special key or error if key or file invalid
+            else
+                return String "Error: expected 0 - 2 arguments."
+
+        private String listFiles(): // method for requesting file list
+            fileList = ask FileHandler for list of files
+            format if necessary
+            return fileList
+
+        private String defaultDecipher(String fileNum):
+            fileContents = ask filehandler for contents, providing args[0] as file number and providing it with default key (or singalling to use defaul key)
+            if FileHandler throws exception
+                return errorMessage
+            format if necessary
+            return fileContents
+
+        private String specialDecipher(String fileNum, String key):
+            fileContents = ask FileHandler for contents, providing args[0] as file number and args[1] as special key
+            if FileHandler throws exception
+                return errorMessage
+            format if necessary
+            return fileContents
+
+
+
+
+
+
+
+
+}
+
+
+
+
+    }
+
+
+
+switch args
+    case -> args <= 0
+        ask for directory of files [data] from B
+        provide list of files [for A to print to CLI]
+    case -> args == 1
+       read arg
+       ask B for corresponding file
+       send file to D, default key
+       receive deciphered file from D
+       send desciphered file to A
+   case -> args == 2
+        same as if args == 1
+        but send in key as specified in args[1]
+   default -> 0
+        provide list of files
+
+
+
+ # what do i need to understand for this program to work?
+        1) which files am i to send in each case? ciphered files? deciphered files?
+        2) figure out how I will receive arguments [how does CLI UI work?]
+        3) how will i receive text back?
+        4) how do I want to call the decipher dunction (person D's part)
+        5) what fields do I need?
+        6) how do I actually want to send the file itself? or read the file and then write it out again?
+
+# tests:
+- number of arguments
+    - How does program responds when 0 args
+        * list files available to display:
+                01 filea.txt
+                02 fileb.txt
+                03 filec.txt
+        * program exits
+    - How does program responds when 1 args
+        * if valid file, responds with correspondgin file text
+        * program exits
+    - How does program responds when 2 args
+        * if valid file and key [?], responds with corresponding deciphered gile
+        * program exits
+    - How does program respond when >2 args
+- arguments themselves
+        - How does program respond if invalid args
+            * error message
+            * program exits
