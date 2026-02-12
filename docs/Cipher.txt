@@ -1,0 +1,163 @@
+Cipher
+
+The Cipher class construtor should receive two strings: the cipher key and the
+corresponding decipher key. The cipher class should validate that these are
+valid corresponding keys through three metrics:
+
+1. Each key has the same length
+2. Each key has the same corresponding letters
+3. Each key has no duplicate letters.
+
+If any of these rules are broken, the Cipher class will
+throw an IllegalArgumentException. Next, the Cipher Key implements a
+Deciphering Function, which takes in a ciphered string and returns the
+deciphered string using the input keys.
+
+Pseudocode:
+
+let TextKey = input String of Possible Values to Decipher
+let CipherTextKey = Input String of Corresponding Ciphered Values to TextKey
+let DecipherHashMap = empty HashMap<Character,Character>
+let CipheredInput = empty String that needs to be deciphered
+
+
+FUNCTION Cipher (String TextKey, String CipherTextKey)
+    // Validates that TextKey and CipherTextKey are valid using above rules
+    // Fills DecipherHashMap, where each key is the Ciphered Text Value and each value is the corresponding un-ciphered value
+
+    Set this.TextKey to TextKey
+    Set this.CipheredTextKey to CipheredTextKey
+
+     if ValidateCipherStrings returns false{
+        throw IllegaLArgumentException that states invalid arguments
+     }
+
+     Create empty map DecipherMap
+
+     for each index i from 0 to length of CipheredTextKey{
+        Map and fill DecipherHashMap with CipheredTextKeyArray[i] -> TextKeyArray[i]
+     }
+
+FUNCTION DecipherString(String CipheredInput)
+    //Takes in ciphered input text and returns deciphered version using the keys
+
+    Create empty string builder DecipheredString
+
+    For each character c in CipheredInput{
+        If DecipherHashMap contains c{
+            Append DecipherMap[c] to DecipheredString
+        }
+        else {
+            Append c unchanged
+        }
+    }
+
+    Return DecipheredString as string
+
+FUNCTION ValidateCipherStrings()
+    // runs program that prompts and tests user's sonnet memory
+    let correctCount = 0
+    let wrongCount = 0
+
+    print instructions of game to user
+
+    while wrongCount <3 and correctCount <3
+        select random index from start indices
+        generate and print out all text before start index
+        let guess = user's guess of next word
+
+        if guess == wordList[i] ignoring case
+            correctCount++
+        else
+            wrongCount++
+    if correctCount ==3
+        print winning message
+    else
+        print losing message
+    print game end message
+
+FUNCTION main()
+    // Checks if both keys are valid and correspond to each other
+
+    If length of TextKey does not equal the length of CipheredTextKey{
+        Return false
+    }
+
+    Convert TextKey to char array TextKeyArray
+    Convert CipheredTextKey to char array CipheredKeyArray
+
+    Sort TextKeyArray
+    Sort CipheredKeyArray
+
+    If sorted arrays do not equal each other{
+        return false
+    }
+
+    Create empty hashset seen
+
+    For each character c in TextKeyArray{
+        If c is already in seen{
+            return false
+        add c to seen
+        }
+    }
+    return true
+
+Tests
+
+----
+
+If the cipher constructed with
+TextKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+CipheredTextKey = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890a"
+
+and the input text is "bcd",
+the deciphered output should be "abc".
+
+----
+
+If the cipher maps
+TextKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+CipheredTextKey = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890a"
+
+and the input text is "234",
+the deciphered output should be "123".
+
+----
+
+If the cipher maps
+TextKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+CipheredTextKey = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890a"
+
+and the input text is "",
+the deciphered output should be "".
+
+----
+
+If the cipher maps
+TextKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+CipheredTextKey = "bcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890a"
+
+and the input text is
+"Dbsojwpsf, mbufs sfobnfe EDT2aaa,",
+
+the deciphered output should be
+"Carnivore, later renamed DCS1000,".
+
+----
+
+If TextKey and CipheredTextKey are the same length but do not contain the same characters
+(for example "abc" and "mqp"),
+the constructor should throw an IllegalArgumentException.
+
+----
+
+If TextKey and CipheredTextKey are different lengths
+(for example "abc" and "cab3"),
+the constructor should throw an IllegalArgumentException.
+
+----
+
+If either key contains duplicate characters
+(for example "aabc" and "aabc"),
+the constructor should throw an IllegalArgumentException.

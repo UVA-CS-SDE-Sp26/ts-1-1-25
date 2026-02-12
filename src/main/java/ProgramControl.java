@@ -1,4 +1,3 @@
-
 public class ProgramControl {
     int argsNum;
     //stub: instantiate fileHandler object.

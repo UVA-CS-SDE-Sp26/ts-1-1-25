@@ -19,3 +19,4 @@ Cipher:
 Receive file contents and cipher from File Handler.
 Decrypt file contents.
 Return file contents to File Handler.
+Validate Cipher Keys
