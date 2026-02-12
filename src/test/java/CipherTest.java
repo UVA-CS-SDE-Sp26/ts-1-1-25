@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CipherTest {
     private String TextKey = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -30,16 +31,25 @@ class CipherTest {
     }
 
     @Test
-    void ValidateSameLengthCipherDifferentCharactersTest() {
-        Cipher cipher = new Cipher("abc","mqp");
-        assertEquals(false, cipher.ValidateCipherStrings());
+    void ValidateSameLengthCipherDifferentCharactersTestException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Cipher("abc", "mqp");
+        });
     }
 
     @Test
-    void ValidateCorrectCipherTest() {
-        Cipher cipher = new Cipher(TextKey,CipheredTextKey);
-        assertEquals(true, cipher.ValidateCipherStrings());
+    void ValidateDifferentLengthCipherThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Cipher("abc", "cab3");
+        });
     }
+    @Test
+    void ValidateDuplicateValuesCipherThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Cipher("aabc", "aabc");
+        });
+    }
+
 
 
 }

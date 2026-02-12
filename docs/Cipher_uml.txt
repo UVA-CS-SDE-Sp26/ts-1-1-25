@@ -3,5 +3,6 @@ Cipher
 - CipherText: String
 - DecipherText: String
 ---------
-Prithee(CipherText: String, DecipherText: String)
-DecipherString(InputText: String): String
+Cipher(CipherText: String, DecipherText: String)
+DecipherString(CipheredInput: String): String
+ValidateCipherStrings(): Boolean
