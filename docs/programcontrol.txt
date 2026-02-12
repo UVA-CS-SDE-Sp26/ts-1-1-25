@@ -1,0 +1,103 @@
+Program Control
+
+-- DESCRIPTION --
+
+After the user interacts with the CLI and User Interface parses through arguments, Program Control decides how to
+proceed according to the number of arguments provided. Program control takes between 0 and 2 arguments.
+
+Zero arguments:
+When no arguments are given, the program should ask for a directory of files from the File Handler. The program should
+then return a list of all available files, with the file number and associate title.
+
+One argument:
+When there is one argument given, the program should request file contents from the File Handler [validate?] using the
+number of the file and provide it with a default key. Upon return of the deciphered message associated with the given
+file, Program Control returns the deciphered string to User Interface. If the file number is invalid, Program Control
+returns an error message.
+
+Two arguments:
+When there are two arguments given, the program should request file contents from the File Handler and provide it with a
+specified alternate key to use when deciphering. If the file number or alternate key is invalid, Program Control returns
+an error message. If the deciphered message is returned successfully, Program Control returns the deciphered string.
+
+-- TESTS --
+
+.run()
+    given 0 arguments, should return string listing files
+    given 1 valid argument, should return string with corresponding fileContent
+    given 1 invalid argument, should return error
+    given 2 valid arguments, should return string with corresponding fileContent
+    given 2 arguments and invalid fileNum, should return invalid file error message
+    given 2 arguments and invalid key, should return invalid key error message
+    given more than 2 arguments, should return invalid arguments error
+
+
+- number of arguments
+    - How does program responds when 0 args
+        * list files available to display:
+                01 filea.txt
+                02 fileb.txt
+                03 filec.txt
+        * program exits
+    - How does program responds when 1 args
+        * if valid file, responds with correspondgin file text
+        * program exits
+    - How does program responds when 2 args
+        * if valid file and key [?], responds with corresponding deciphered gile
+        * program exits
+    - How does program respond when >2 args
+- arguments themselves
+        - How does program respond if invalid args
+            * error message
+            * program exits
+
+-- PSEUDOCODE --
+
+// Upon construction of a Program Control object, method caller should specify the number of arguments and the arguments
+themselves
+// this can be tweaked; User Interface need not provide number of arguments; I can just figure that out
+
+public class ProgramControl {
+        instantiate FileHandler object
+        instantiate String errorMessageFile
+        instantiate String errorMessageCipher
+
+        ProgramControl constructor:
+            this.fileHandler = fileHandler;
+
+        public String run(String[] args):
+            if args.length == 0
+                call listFiles method to return file list
+            if args.length == 1
+                call defaultDecipher method with parameter args[0] to return decoded message using default key or error if fileNum invalid
+            if args.length == 2
+                call SpecialDecipher(args[0], args[1]) to return decoded message using special key or error if key or file invalid
+            else
+                return String "Error: expected 0 - 2 arguments."
+
+        private String listFiles(): // method for requesting file list
+            fileList = ask FileHandler for list of files
+            format if necessary
+            return fileList
+
+        private String defaultDecipher(String fileNum):
+            fileContents = ask filehandler for contents, providing args[0] as file number and providing it with default key (or singalling to use defaul key)
+            if FileHandler throws exception
+                return errorMessage
+            format if necessary
+            return fileContents
+
+        private String specialDecipher(String fileNum, String key):
+            fileContents = ask FileHandler for contents, providing args[0] as file number and args[1] as special key
+            if FileHandler throws exception
+                return errorMessage
+            format if necessary
+            return fileContents
+
+
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+Cipher
+---------
+- CipherText: String
+- DecipherText: String
+---------
+Cipher(CipherText: String, DecipherText: String)
+DecipherString(CipheredInput: String): String
+ValidateCipherStrings(): Boolean
