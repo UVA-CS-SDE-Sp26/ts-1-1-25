@@ -57,8 +57,6 @@ public class FileHandler {
         // ex) cipher.decipher(cipherText, cipherKey);
     }
 
-    // ----------------- internal helper methods -----------------
-
     private List<String> getSortedFiles(String fileType) throws IOException {
         File dir = new File(dataFolder);
         if (!dir.exists() || !dir.isDirectory()) {
@@ -83,19 +81,17 @@ public class FileHandler {
         names.sort(String.CASE_INSENSITIVE_ORDER);
         return names;
     }
-
     private int parseFileNumberToIndex(String fileNum) {
         if (fileNum == null || fileNum.isBlank()) {
             throw new IllegalArgumentException("File number must not be blank.");
         }
         try {
-            int n = Integer.parseInt(fileNum); // "01"도 OK
+            int n = Integer.parseInt(fileNum);
             return n - 1; // 01 -> index 0
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("File number must be numeric: " + fileNum);
         }
     }
-
     private String readWholeFile(File file) throws IOException {
         return java.nio.file.Files.readString(file.toPath());
     }
