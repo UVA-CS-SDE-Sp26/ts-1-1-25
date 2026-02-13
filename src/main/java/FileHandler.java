@@ -41,8 +41,12 @@ public class FileHandler {
         int idx = parseFileNumberToIndex(fileNum);
         // 1) sort .cip files and map fileNum
         List<String> cipNames = getSortedFiles(".cip");
-        if (cipNames.isEmpty()) { throw new FileNotFoundException("No .cip files found in data directory."); }
-        if (idx < 0 || idx >= cipNames.size()) { throw new IllegalArgumentException("Invalid file number: " + fileNum); }
+        if (cipNames.isEmpty()) {
+            throw new FileNotFoundException("No .cip files found in data directory.");
+        }
+        if (idx < 0 || idx >= cipNames.size()) {
+            throw new IllegalArgumentException("Invalid file number: " + fileNum);
+        }
 
         String cipFileName = cipNames.get(idx);
         File cipFile = new File(dataFolder, cipFileName);
@@ -50,8 +54,6 @@ public class FileHandler {
 
         // 2) select cipher key file (default or alternate)
         String keyFileName = (cypherKey == null || cypherKey.isBlank()) ? defaultKeyFile : cypherKey;
-
-        // 보통 사용자 arg2가 "mykey" 이런 식이면 ".txt"를 붙여줄지 팀 규약 필요.
         File keyFile = new File(ciphersFolder, keyFileName);
 
         // 3) read Two lines from key file then construct Cypher
@@ -59,11 +61,12 @@ public class FileHandler {
         String textKey = keys[0];
         String cipheredTextKey = keys[1];
 
-        // The Cipher constructor will validate and / or throw IllegalArgumentException
-        Cipher cipher = new Cipher(textKey, cipheredTextKey);
-
-        // 4) return deciphered result
-        return cipher.DecipherString(cipherText);
+        try {
+            Cipher cipher = new Cipher(textKey, cipheredTextKey);
+            return cipher.DecipherString(cipherText);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid decipher key", e);
+        }
     }
 
     private List<String> getSortedFiles(String fileType) throws IOException {
@@ -107,7 +110,7 @@ public class FileHandler {
         return Files.readString(file.toPath());
     }
 
-   // Are key files always two lines?
+    // Are key files always two lines?
     private String[] readTwoLineKeyFile(File keyFile) throws IOException {
         if (!keyFile.exists() || !keyFile.isFile()) {
             throw new FileNotFoundException("Key file not found: " + keyFile.getPath());
