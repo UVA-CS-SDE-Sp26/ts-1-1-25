@@ -52,15 +52,18 @@ public class FileHandler {
         File cipFile = new File(dataFolder, cipFileName);
         String cipherText = readWholeFile(cipFile);
 
-        // 2) select cipher key file (default or alternate)
-        String keyFileName = (cypherKey == null || cypherKey.isBlank()) ? defaultKeyFile : cypherKey;
-        File keyFile = new File(ciphersFolder, keyFileName);
+        File keyFile = new File(ciphersFolder, defaultKeyFile);
 
-        // 3) read Two lines from key file then construct Cypher
-        String[] keys = readTwoLineKeyFile(keyFile); // [0]=TextKey, [1]=CipheredTextKey
+        String[] keys = (cypherKey == null || cypherKey.isBlank())
+                ? readTwoLineKeyFile(keyFile)
+                : cypherKey.split("\\R");
+
+        if (keys.length < 2) {
+            throw new IllegalArgumentException("Cipher key must contain at least two lines.");
+        }
+
         String textKey = keys[0];
         String cipheredTextKey = keys[1];
-
         try {
             Cipher cipher = new Cipher(textKey, cipheredTextKey);
             return cipher.DecipherString(cipherText);
@@ -117,10 +120,6 @@ public class FileHandler {
         }
 
         List<String> lines = Files.readAllLines(keyFile.toPath());
-        if (lines.size() < 2) {
-            throw new IllegalArgumentException("Key file must contain at least 2 lines: " + keyFile.getPath());
-        }
-
         String textKey = lines.get(0);
         String cipheredTextKey = lines.get(1);
 
