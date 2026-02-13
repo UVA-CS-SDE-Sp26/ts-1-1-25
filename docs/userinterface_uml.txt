@@ -1,0 +1,4 @@
+UserInterface
+----------------
+----------------
++ parseArguments(arguments: String[]): String
