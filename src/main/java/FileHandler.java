@@ -1,22 +1,24 @@
-import javax.crypto.Cipher; // WARNING: not the API for this project. delete when Cipher class is created
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileHandler {
 
-    private final Cipher cipher; // assuming Team Member D's Cipher Class exists
-    private final String dataFolder = "data";
+    private String dataFolder = "data";
+    private String ciphersFolder = "ciphers";
+    private final String defaultKeyFile = "key.txt";
 
-    public FileHandler(Cipher cipher) {
-        if (cipher == null) throw new IllegalArgumentException("cipher must not be null");
-        this.cipher = cipher;
+    public FileHandler(String dataFolder, String ciphersFolder) {
+        if (dataFolder == null || dataFolder.isBlank()) throw new IllegalArgumentException("dataFolder must not be blank");
+        if (ciphersFolder == null || ciphersFolder.isBlank()) throw new IllegalArgumentException("ciphersFolder must not be blank");
+        this.dataFolder = dataFolder;
+        this.ciphersFolder = ciphersFolder;
     }
 
-    /** Case 1: Team Member A receives no arguments
-      return string of filenames with numbers in data folder (format: "01 name.txt") */
+    /** Case 1: no args -> list .txt files numbered */
     public String getListOfNumberedFiles() throws IOException {
         List<String> names = getSortedFiles(".txt");
 
@@ -29,32 +31,39 @@ public class FileHandler {
     }
 
     /**
-     * Case 2: Team Member A receives additional arguments
-     * sorts .cip files in data in alphabetical order
-     * reads the .cip file based on the fileNum (ex. 01 -> .cip file in index 0)
-     * gives Team Member B (Cipher) the content and cipherKey
-     * returns the deciphered text
+     * Case 2: args present -> decipher .cip file by number using key file
+     * @param fileNum  must be a number (ex. "01")
+     * @param cypherKey  if null/blank, use default key.txt
+     *                   else, use the name of file (ex. "altkey.txt")
      */
-    public String getDecipheredFile(String fileNum, String cipherKey) throws IOException {
+    public String getDecipheredFile(String fileNum, String cypherKey) throws IOException {
 
-        // the first argument fileNumber is used as the index number
         int idx = parseFileNumberToIndex(fileNum);
-
-        // sort .cip files in alphabetical order
+        // 1) sort .cip files and map fileNum
         List<String> cipNames = getSortedFiles(".cip");
-        if (cipNames.isEmpty()) {
-            throw new FileNotFoundException("No .cip files found in data directory.");
-        }
-        if (idx < 0 || idx >= cipNames.size()) {
-            throw new IllegalArgumentException("Invalid file number: " + fileNum);
-        }
-        // match the .cip file and the index
+        if (cipNames.isEmpty()) { throw new FileNotFoundException("No .cip files found in data directory."); }
+        if (idx < 0 || idx >= cipNames.size()) { throw new IllegalArgumentException("Invalid file number: " + fileNum); }
+
         String cipFileName = cipNames.get(idx);
-        // find that file in dataFolder and read its contents
         File cipFile = new File(dataFolder, cipFileName);
         String cipherText = readWholeFile(cipFile);
-        return null; // when the cipher algorithm is complete, use that method to retrieve deciphered text
-        // ex) cipher.decipher(cipherText, cipherKey);
+
+        // 2) select cipher key file (default or alternate)
+        String keyFileName = (cypherKey == null || cypherKey.isBlank()) ? defaultKeyFile : cypherKey;
+
+        // 보통 사용자 arg2가 "mykey" 이런 식이면 ".txt"를 붙여줄지 팀 규약 필요.
+        File keyFile = new File(ciphersFolder, keyFileName);
+
+        // 3) read Two lines from key file then construct Cypher
+        String[] keys = readTwoLineKeyFile(keyFile); // [0]=TextKey, [1]=CipheredTextKey
+        String textKey = keys[0];
+        String cipheredTextKey = keys[1];
+
+        // The Cipher constructor will validate and / or throw IllegalArgumentException
+        Cipher cipher = new Cipher(textKey, cipheredTextKey);
+
+        // 4) return deciphered result
+        return cipher.DecipherString(cipherText);
     }
 
     private List<String> getSortedFiles(String fileType) throws IOException {
@@ -81,6 +90,7 @@ public class FileHandler {
         names.sort(String.CASE_INSENSITIVE_ORDER);
         return names;
     }
+
     private int parseFileNumberToIndex(String fileNum) {
         if (fileNum == null || fileNum.isBlank()) {
             throw new IllegalArgumentException("File number must not be blank.");
@@ -92,7 +102,25 @@ public class FileHandler {
             throw new IllegalArgumentException("File number must be numeric: " + fileNum);
         }
     }
+
     private String readWholeFile(File file) throws IOException {
-        return java.nio.file.Files.readString(file.toPath());
+        return Files.readString(file.toPath());
+    }
+
+   // Are key files always two lines?
+    private String[] readTwoLineKeyFile(File keyFile) throws IOException {
+        if (!keyFile.exists() || !keyFile.isFile()) {
+            throw new FileNotFoundException("Key file not found: " + keyFile.getPath());
+        }
+
+        List<String> lines = Files.readAllLines(keyFile.toPath());
+        if (lines.size() < 2) {
+            throw new IllegalArgumentException("Key file must contain at least 2 lines: " + keyFile.getPath());
+        }
+
+        String textKey = lines.get(0);
+        String cipheredTextKey = lines.get(1);
+
+        return new String[]{textKey, cipheredTextKey};
     }
 }
