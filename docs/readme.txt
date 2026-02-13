@@ -1,5 +1,10 @@
 TopSecret documentation
 
+TopSecret:
+Entry point of program.
+Calls User Interface using args from command line.
+Prints exceptions and errors if necessary.
+
 User Interface:
 Parses arguments and determines how to call Program Control.
 If there are no arguments, request a list of available files from Program Control.

@@ -3,9 +3,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 
-public class ProgramControlTest {
-
-    String testFileList = "01 filea.txt \n 02 fileb.txt \n 03 filec.txt";
+public class ProgramControlTest { // //    String testFileList = "01 filea.txt \n 02 fileb.txt \n 03 filec.txt";
     String testFileContents = "This is a test file. Use it as a placeholder.";
     String errorMessageFile = "Error: Invalid File.";
     String errorMessageKey = "Error: Invalid Decipher Key.";
