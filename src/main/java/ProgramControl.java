@@ -2,6 +2,7 @@ import java.io.IOException;
 
 public class ProgramControl {
     private static final String ERROR_FILE = "Error: Invalid File.";
+    private static final String ERROR_DATA = "Error: There is no data to display.";
     private final FileHandler fileHandler;
 
     public ProgramControl() {
@@ -13,7 +14,7 @@ public class ProgramControl {
             return fileHandler.getListOfNumberedFiles();
         } catch (IOException e) {
             // data folder missing, unreadable, etc.
-            return e.getMessage();
+            return ERROR_DATA;
         }
     }
 
