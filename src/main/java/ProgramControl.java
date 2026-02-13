@@ -1,54 +1,41 @@
+import java.io.IOException;
+
 public class ProgramControl {
-    int argsNum;
-    //stub: instantiate fileHandler object.
-    String errorMessageFile = "Error: Invalid File.";
-    String errorMessageKey = "Error: Invalid Decipher Key.";
+    private static final String ERROR_FILE = "Error: Invalid File.";
+    private final FileHandler fileHandler;
 
-
-    //stub: create constructor
-
-    public static String run(String[] args) {
-        return switch (args.length) {
-            case 0 -> listFiles();
-            case 1 -> defaultDecipher(args[0]);
-            case 2 -> specialDecipher(args[0], args[1]);
-            default -> "Error: Expected 0, 1, or 2 arguments."
-
-        }
-
+    public ProgramControl() {
+        this.fileHandler = new FileHandler("data", "ciphers");
     }
 
-    private String listFiles{
-        String fileList =// stub: ask FileHandler for list of files
-        // NOTE TO SELF: FileHandler may return String[]; can reformat to String
-        return filelist;
-
-    }
-
-    private  String defaultDecipher(String fileNum){
-            try {
-                String fileContents = // stub: provide FileHandler with fileNum and default key, request deciphered file Contents
-            } catch () { //stub: check what exception FileHandler throws when filenumber invalid
-                return errorMessageFile;
-            }
-
-
-        return fileContents;
-    }
-
-    private String specialDecipher(String fileNum, String key){
+    public String listFiles() {
         try {
-            String fileContents = // stub: provide FileHandler with fileNum and special key, request deciphered file Contents
-
-        } catch () { // catch invalid file error first
-            return errorMessageFile;
-        } catch () { // then catch invalid key error
-            return errorMessageKey;
+            return fileHandler.getListOfNumberedFiles();
+        } catch (IOException e) {
+            // data folder missing, unreadable, etc.
+            return e.getMessage();
         }
-
     }
 
+    public String defaultDecipher(int fileNumber) {
+        try {
+            return fileHandler.getDecipheredFile(String.valueOf(fileNumber),null); // default decipher key?
+        } catch (IllegalArgumentException e) {
+            // With a valid default key, IllegalArgumentException here should mean "bad file number"
+            throw new IllegalArgumentException(e);
+        } catch (IOException e) {
+            return ERROR_FILE;
+        }
+    }
 
-
+    public String specialDecipher(int fileNumber, String key) {
+        try {
+            return fileHandler.getDecipheredFile(String.valueOf(fileNumber), key);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e);
+            } catch (IOException e) {
+            return ERROR_FILE;
+        }
+    }
 
 }
