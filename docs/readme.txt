@@ -1,5 +1,12 @@
 TopSecret documentation
 
+To run the program, go to the project root and type 'gradlew run' to get a list of the available files to decipher.
+
+In order to run the program with a specific file type 'gradlew run --args="01"' to decipher a particular file,
+where 01 corresponds to the file number of the previous displayed list of files.
+
+You may also provide a second argument to specify an alternate key file for deciphering, if desired.
+
 TopSecret:
 Entry point of program.
 Calls User Interface using args from command line.
