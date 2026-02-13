@@ -33,7 +33,8 @@ public class FileHandler {
     /**
      * Case 2: args present -> decipher .cip file by number using key file
      * @param fileNum  must be a number (ex. "01")
-     * @param cipherKey  if null/blank, use default key.txt, else use alternate key
+     * @param cipherKey  if null/blank, use default key.txt
+     *                   else, use the name of file (ex. "altkey.txt")
      */
     public String getDecipheredFile(String fileNum, String cipherKey) throws IOException {
 
@@ -51,18 +52,15 @@ public class FileHandler {
         File cipFile = new File(dataFolder, cipFileName);
         String cipherText = readWholeFile(cipFile);
 
-        File keyFile = new File(ciphersFolder, defaultKeyFile);
+        // 2) select cipher key file (default or alternate)
+        String keyFileName = (cipherKey == null || cipherKey.isBlank()) ? defaultKeyFile : cipherKey;
+        File keyFile = new File(ciphersFolder, keyFileName);
 
-        String[] keys = (cipherKey == null || cipherKey.isBlank())
-                ? readTwoLineKeyFile(keyFile)
-                : cipherKey.split("\\R");
-
-        if (keys.length < 2) {
-            throw new IllegalArgumentException("Cipher key must contain at least two lines.");
-        }
-
+        // 3) read Two lines from key file then construct Cypher
+        String[] keys = readTwoLineKeyFile(keyFile); // [0]=TextKey, [1]=CipheredTextKey
         String textKey = keys[0];
         String cipheredTextKey = keys[1];
+
         try {
             Cipher cipher = new Cipher(textKey, cipheredTextKey);
             return cipher.DecipherString(cipherText);
@@ -119,6 +117,10 @@ public class FileHandler {
         }
 
         List<String> lines = Files.readAllLines(keyFile.toPath());
+        if (lines.size() < 2) {
+            throw new IllegalArgumentException("Key file must contain at least 2 lines: " + keyFile.getPath());
+        }
+
         String textKey = lines.get(0);
         String cipheredTextKey = lines.get(1);
 
