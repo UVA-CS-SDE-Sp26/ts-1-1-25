@@ -35,3 +35,7 @@ parseArguments with one invalid argument -> expect IllegalArgumentException
 parseArguments with two valid arguments -> expect file contents
 parseArguments with two invalid arguments -> expect IllegalArgumentException
 parseArguments with more than two arguments -> expect IllegalArgumentException
+
+Integration Tests:
+parseArguments with one invalid argument and a real ProgramControl argument -> expect IllegalArgumentException
+parseArguments with two valid arguments and a real ProgramControl argument -> expect file contents of carnivore.txt
