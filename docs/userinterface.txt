@@ -10,3 +10,28 @@ One or two arguments:
 The first argument, which must be a number corresponding to the file list, is
 given, the program prints the contents of the file. If there is a second
 argument, the file is assumed to be cyphered according to the given key.
+
+Pseudocode:
+UserInterface(ProgramControl programControl):
+    set this.programControl to programControl
+
+parseArguments(String[] arguments) -> String:
+    if arguments.length > 2:
+        throw IllegalArgumentException
+
+    if arguments.length == 0:
+        return fileList from programControl
+
+    fileNum = parse first argument as integer
+    if arguments.length == 2:
+        return fileContents from programControl.specialDecipher using the second argument as a cipher key filename
+    else:
+        return fileContents from programControl.defaultDecipher
+
+Tests:
+parseArguments with no arguments -> expect file list
+parseArguments with one valid argument -> expect file contents
+parseArguments with one invalid argument -> expect IllegalArgumentException
+parseArguments with two valid arguments -> expect file contents
+parseArguments with two invalid arguments -> expect IllegalArgumentException
+parseArguments with more than two arguments -> expect IllegalArgumentException
