@@ -61,9 +61,6 @@ public class Cipher {
             return false;
         }
 
-        System.out.println(TextKeyArray);
-        System.out.println(CipheredTextKey);
-
         HashSet<Character> seen = new HashSet<>();
         for (char c: TextKeyArray){
             if (seen.contains(c)){
