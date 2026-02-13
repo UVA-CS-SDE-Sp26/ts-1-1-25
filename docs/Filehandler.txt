@@ -38,10 +38,10 @@ FUNCTION getDecipheredFile(fileNum, cypherKey)
     let cipFileName = cipNames[index]
     let cipherText = text in cipFilName
 
-    if cypherKey is null OR blank
+    if cipherKey is null OR blank
         let keyFile = defaultKeyFile in ciphersFolder
     else
-        let keyFile = alternate cypherKey
+        let keyFile = alternate cipherKey
 
     let lines = all lines read from keyFile
     let textKey = the first line
@@ -54,7 +54,7 @@ getListOfNumberedFiles
 1. TXT files sorted alphabetically -> Expect numbered list in ascending order
 
 getDecipheredFile
-1. Uses default key when cypherKey is null -> Expect correctly deciphered text
+1. Uses default key when cipherKey is null -> Expect correctly deciphered text
 2. Uses alternate key when provided -> Expect correctly deciphered text using alternate key
 3. No .cip files in data folder -> Expect FileNotFoundException
 4. File number out of range -> Expect IllegalArgumentException

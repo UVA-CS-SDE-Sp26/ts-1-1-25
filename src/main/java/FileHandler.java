@@ -33,10 +33,9 @@ public class FileHandler {
     /**
      * Case 2: args present -> decipher .cip file by number using key file
      * @param fileNum  must be a number (ex. "01")
-     * @param cypherKey  if null/blank, use default key.txt
-     *                   else, use the name of file (ex. "altkey.txt")
+     * @param cipherKey  if null/blank, use default key.txt, else use alternate key
      */
-    public String getDecipheredFile(String fileNum, String cypherKey) throws IOException {
+    public String getDecipheredFile(String fileNum, String cipherKey) throws IOException {
 
         int idx = parseFileNumberToIndex(fileNum);
         // 1) sort .cip files and map fileNum
@@ -54,9 +53,9 @@ public class FileHandler {
 
         File keyFile = new File(ciphersFolder, defaultKeyFile);
 
-        String[] keys = (cypherKey == null || cypherKey.isBlank())
+        String[] keys = (cipherKey == null || cipherKey.isBlank())
                 ? readTwoLineKeyFile(keyFile)
-                : cypherKey.split("\\R");
+                : cipherKey.split("\\R");
 
         if (keys.length < 2) {
             throw new IllegalArgumentException("Cipher key must contain at least two lines.");
