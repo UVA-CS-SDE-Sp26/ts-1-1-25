@@ -1,6 +1,10 @@
 public class UserInterface {
 
-    public UserInterface() {}
+    private ProgramControl programControl;
+
+    public UserInterface(ProgramControl programControl) {
+        this.programControl = programControl;
+    }
 
     public String parseArguments(String[] arguments) throws IllegalArgumentException {
         // we can accept a maximum of 2 arguments
@@ -9,23 +13,18 @@ public class UserInterface {
         }
         // no arguments means we print out a file list
         if (arguments.length == 0) {
-            String fileList = "";
-            // stub: ask ProgramControl for file list
-            return fileList;
+            return this.programControl.listFiles();
         }
 
-        String cipherFile = "key.txt";
-        // if we received two arguments, we need to use the second as the cipherFile instead of the default
-        if (arguments.length == 2) {
-            // verify that this is actually a file?
-            cipherFile = arguments[1];
-        }
         // try to get the file contents
         try {
             int fileNumber = Integer.parseInt(arguments[0]);
-            String fileContents = "";
-            // stub: call ProgramControl with fileNumber and cypherFile to get file contents
-            return fileContents;
+            // if we received two arguments, we need to use the second as the cipherFile instead of the default
+            if (arguments.length == 2) {
+                return this.programControl.specialDecipher(fileNumber, arguments[1]);
+            } else {
+                return this.programControl.defaultDecipher(fileNumber);
+            }
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("First argument should be a number");
         }
