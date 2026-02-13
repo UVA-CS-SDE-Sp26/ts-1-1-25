@@ -1,4 +1,4 @@
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
@@ -10,9 +10,19 @@ class UserInterfaceTest {
     String testFileList = "1 file1\n2 file 2\n3 file 3";
     String testFileContentsOne = "contents of a file";
     String testFileContentsTwo = "contents of another file";
+    String carnivoreText = """
+Carnivore, later renamed DCS1000, was a system implemented by the Federal Bureau of Investigation (FBI) that was
+designed to monitor email and electronic communications. It used a customizable packet sniffer that could monitor all
+of a target user's Internet traffic. Carnivore was implemented in October 1997. By 2005 it had been replaced with
+improved commercial software.""";
 
     @Mock
     ProgramControl programControlMocked;
+
+    @BeforeEach
+    public void setup() {
+        programControlMocked = mock(ProgramControl.class);
+    }
 
     @Test
     public void parseArgumentsZero() {
@@ -67,5 +77,19 @@ class UserInterfaceTest {
         UserInterface ui = new UserInterface(programControlMocked);
         String[] arguments = new String[]{"1", "key.txt", "too", "many", "arguments"};
         assertThrows(IllegalArgumentException.class, () -> ui.parseArguments(arguments), "Should throw IllegalArgumentException as there are too many arguments");
+    }
+
+    @Test
+    public void parseArgumentsIntegrationInvalid() {
+        UserInterface ui = new UserInterface(new ProgramControl());
+        String[] arguments = new String[]{"Invalid arguments"};
+        assertThrows(IllegalArgumentException.class, () -> ui.parseArguments(arguments), "Should throw IllegalArgumentException as the first argument is not a number.");
+    }
+
+    @Test
+    public void parseArgumentsIntegrationValid() {
+        UserInterface ui = new UserInterface(new ProgramControl());
+        String[] arguments = new String[]{"1", "key.txt"};
+        assertEquals(carnivoreText, ui.parseArguments(arguments), "Output should be the contents of carnivore.txt");
     }
 }
