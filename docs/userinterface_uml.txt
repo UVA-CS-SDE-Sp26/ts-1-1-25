@@ -1,4 +1,5 @@
 UserInterface
 ----------------
 ----------------
-+ parseArguments(arguments: String[]): String
++UserInterface(programControl: ProgramControl)
++parseArguments(arguments: String[]): String
