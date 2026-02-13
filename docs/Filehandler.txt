@@ -1,0 +1,62 @@
+Filehandler
+Jongwon (Julian) Lee
+2/13/2026
+
+DESCRIPTION
+FileHandler is responsible for all direct file system access in the program.
+
+Its main responsibilities are:
+    1. Reading available .txt files from the data folder and returning a numbered list.
+    2. Reading a selected .cip file based on a file number argument.
+    3. Reading a cipher key file (default or alternate) from ciphers folder.
+    4. Returning the deciphered text content of the selected .cip file.
+
+Exceptions are invalid file numbers, missing files, and invalid cipher keys
+
+PSEUDOCODE
+let dataFolder = path to the data directory
+let ciphersFolder = path to the ciphers directory
+let defaultKeyFile = "key.txt"
+
+FUNCTION getListOfNumberedFiles
+    let names = filenames in dataFolder that end with ".txt"
+    sort names alphabetically
+
+    let sb = new stringBuilder
+    while index is less than size of names
+        append file number and names[index] to sb
+        separate by each line
+        index++
+    return sb as string
+
+FUNCTION getDecipheredFile(fileNum, cypherKey)
+
+    let index = fileNum parsed as int
+    let cipNames = filenames in dataFolder that end with ".cip"
+    sort cipNames alphabetically
+
+    let cipFileName = cipNames[index]
+    let cipherText = text in cipFilName
+
+    if cipherKey is null OR blank
+        let keyFile = defaultKeyFile in ciphersFolder
+    else
+        let keyFile = alternate cipherKey
+
+    let lines = all lines read from keyFile
+    let textKey = the first line
+    let cipheredTextKey = the second line
+    let cipher = new Cipher (textKey, cipheredTextKey)
+    return decipheredText
+
+TESTS
+getListOfNumberedFiles
+1. TXT files sorted alphabetically -> Expect numbered list in ascending order
+
+getDecipheredFile
+1. Uses default key when cipherKey is null -> Expect correctly deciphered text
+2. Uses alternate key when provided -> Expect correctly deciphered text using alternate key
+3. No .cip files in data folder -> Expect FileNotFoundException
+4. File number out of range -> Expect IllegalArgumentException
+5. Key file missing -> Expect FileNotFoundException
+6. Key file has fewer than two lines -> Expect IllegalArgumentException
